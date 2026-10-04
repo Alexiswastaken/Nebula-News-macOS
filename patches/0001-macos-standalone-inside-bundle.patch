@@ -1,0 +1,19 @@
+diff --git a/scripts/after-pack.cjs b/scripts/after-pack.cjs
+index f523496..0ee1a9f 100644
+--- a/scripts/after-pack.cjs
++++ b/scripts/after-pack.cjs
+@@ -10,7 +10,13 @@ const path = require("node:path");
+ module.exports = async function afterPack(context) {
+   const projectRoot = path.join(__dirname, "..");
+   const source = path.join(projectRoot, ".next", "standalone");
+-  const dest = path.join(context.appOutDir, "resources", "standalone");
++  // macOS: the resources live inside the bundle (<App>.app/Contents/Resources), not in
++  // <appOutDir>/resources like on Windows and Linux.
++  const resourcesDir =
++    context.electronPlatformName === "darwin"
++      ? path.join(context.appOutDir, `${context.packager.appInfo.productFilename}.app`, "Contents", "Resources")
++      : path.join(context.appOutDir, "resources");
++  const dest = path.join(resourcesDir, "standalone");
+ 
+   fs.rmSync(dest, { recursive: true, force: true });
+   fs.cpSync(source, dest, { recursive: true });

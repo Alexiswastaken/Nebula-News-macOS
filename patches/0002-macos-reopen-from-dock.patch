@@ -1,15 +1,15 @@
 diff --git a/desktop/main.js b/desktop/main.js
-index c6936cd..d9e7df2 100644
+index f74fe23..2513887 100644
 --- a/desktop/main.js
 +++ b/desktop/main.js
-@@ -336,6 +336,12 @@ if (!app.requestSingleInstanceLock()) {
-     if (process.platform !== "darwin") app.quit();
+@@ -550,6 +550,12 @@ if (!app.requestSingleInstanceLock()) {
+     if (quitWhenAllClosed({ hubConnected, background: BACKGROUND })) app.quit();
    });
  
 +  // macOS only ('activate' is never emitted elsewhere): the app keeps running when its window
 +  // is closed, so a click on the Dock icon opens it again.
 +  app.on("activate", () => {
-+    if (BrowserWindow.getAllWindows().length === 0 && baseUrl) openWindow();
++    if (BrowserWindow.getAllWindows().length === 0 && baseUrl && nebula) void showWindow();
 +  });
 +
    app.on("before-quit", () => {
